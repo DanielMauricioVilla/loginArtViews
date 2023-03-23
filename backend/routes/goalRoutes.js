@@ -11,12 +11,12 @@ const {protect} = require ('../middleware/authMiddleware')
 router.route('/').get(protect, getGoal).post(protect, setGoal)
 router.route('/:id').delete(protect, deleteGoal).put(protect, updateGoal)
 
-// router.get('/', getGoal)
+router.get('/', getGoal)
 
-// router.post('/', setGoal)
+router.post('/', setGoal)
 
-// router.put('/:id', updateGoal)
+router.put('/:id', updateGoal)
 
-// router.delete('/:id', deleteGoal)
+router.delete('/:id', deleteGoal)
 
 module.exports = router
