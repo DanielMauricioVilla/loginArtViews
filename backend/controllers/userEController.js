@@ -1,23 +1,23 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require ('bcryptjs')
 const asyncHandler = require ('express-async-handler')
-const User = require ('../models/userModel')
+const UserE = require ('../models/userEModel')
 
-//@desc   Register new user
-//@route POST /api/users
+//@desc   Register new user entrepreneur
+//@route POST /api/userE
 //@acess Public
-const registerUser = asyncHandler(async(req, res) => {
-    const { name, email, password, date} = req.body
+const registerUserE = asyncHandler(async(req, res) => {
+    const { name, email, password } = req.body
 
-    if (!name || !email || !password|| !date) {
+    if (!name || !email || !password) {
         res.status(400)
         throw new Error('please add all fields')
     }
 
     //Check if user exists
-    const userExists = await User.findOne({email})
+    const userEExists = await UserE.findOne({email})
 
-    if (userExists){
+    if (userEExists){
         res.status(400)
         throw new Error('user already exists')
     }
@@ -27,19 +27,18 @@ const registerUser = asyncHandler(async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
 
     //Create user
-    const user = await User.create ({
+    const userE = await UserE.create ({
         name,
         email,
-        date,
         password: hashedPassword
     })
 
-     if (user){
+     if (userE){
         res.status(201).json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token: GenerateToken(user._id),
+            _id: userE.id,
+            name: userE.name,
+            email: userE.email,
+            token: GenerateToken(userE._id),
         })
      }else {
         res.status(400)
@@ -50,18 +49,18 @@ const registerUser = asyncHandler(async(req, res) => {
 //@desc   Authenticate a user
 //@route POST /api/users/login
 //@acess Public
-const loginUser = asyncHandler(async(req, res) => {
+const loginUserE = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
     //Check for user email
-    const user = await User.findOne({email})
+    const userE = await UserE.findOne({email})
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (userE && (await bcrypt.compare(password, userE.password))) {
         res.json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token: GenerateToken(user._id),
+            _id: userE.id,
+            name: userE.name,
+            email: userE.email,
+            token: GenerateToken(userE._id),
         })
     }else {
         res.status(400)
@@ -73,7 +72,7 @@ const loginUser = asyncHandler(async(req, res) => {
 //@route GET /api/users/me
 //@acess Private
 const getMe = asyncHandler(async(req, res) => {
-    res.status(200).json(req.user)
+    res.status(200).json(req.userE)
 } )
 
 //Generate JWT
@@ -84,7 +83,7 @@ const GenerateToken = (id) => {
 }
 
 module.exports = {
-    registerUser,
-    loginUser,
+    registerUserE,
+    loginUserE,
     getMe,
 }
