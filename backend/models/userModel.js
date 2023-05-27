@@ -18,6 +18,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: [true, 'please add a date']
     },
+    roles: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role',
+    },
 }, 
 {
     timestamps: true
