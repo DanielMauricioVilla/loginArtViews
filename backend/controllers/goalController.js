@@ -1,13 +1,13 @@
 const asyncHandler = require ('express-async-handler')
 
-const Goal = require ('../models/goalModel')
-const User = require ('../models/userModel')
+const Goal = require ('../models/productModel')
+const UserE = require ('../models/userEModel')
 
 //@desc   Get goals
 //@route GET /api/goal
 //@acess Private
 const getGoal = asyncHandler(async (req, res) => {
-    const goals = await Goal.find({ user: req.user.id })
+    const goals = await Goal.find({ userE: req.userE.id })
 
     res.status(200).json(goals)
 })
@@ -22,8 +22,13 @@ const setGoal = asyncHandler(async (req, res) => {
     }
 
     const goal = await Goal.create({
-        text: req.body.text,
-        user: req.user.id 
+        name: req.body.name,
+        img: req.body.img,
+        category: req.body.category,
+        price: req.body.price,
+        cant: req.body.cant,
+        description: req.body.description,
+        userE: req.userE.id 
     })
     
     res.status(200).json(goal)

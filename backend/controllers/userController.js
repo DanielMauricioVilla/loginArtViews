@@ -5,6 +5,7 @@ const User = require ('../models/userModel')
 const Role = require('../models/rolModel')
 
 const UserE = require ('../models/userEModel')
+const Product = require ('../models/productModel')
 
 
 //@desc   Register new user
@@ -214,6 +215,71 @@ const getRol = asyncHandler(async(req, res) => {
     }
 });
 
+//@route POST /api/product/product
+const createProduct = asyncHandler(async(req, res) => {
+    // const { email, nameP, img, category, price, cant, description, nombreEmprendimiento } = req.body
+    const { nameP, img, category, price, cant, description} = req.body
+
+    // if ( !email || !nameP || !img || !category || !price || !cant || !description) {
+    if ( !nameP || !img || !category || !price || !cant || !description) {
+        res.status(400)
+        throw new Error('please add all fields')
+    }
+
+    //Check if user exists
+    const productExists = await Product.findOne({nameP})
+
+    if (productExists){
+        res.status(400)
+        throw new Error('user already exists')
+    }
+
+    //Create product
+    const product = await Product.create ({
+        // email,
+        nameP,
+        img,
+        category,
+        price,
+        cant,
+        description,
+    })
+
+    // if (nombreEmprendimiento) {
+    //     const foundProduct = await UserE.find({name: {$in: nombreEmprendimiento}})
+    //     product.nombreEmprendimiento = foundProduct.map(us => us._id)
+    // } else {
+    //     const userE = await UserE.findOne({email})
+    //     product.nombreEmprendimiento = [userE._id]
+    // }
+
+     if (product){
+        res.status(201).json({
+            _id: product.id,
+            nameP: product.name,
+            img: product.img,
+            category: product.category,
+            price: product.price,
+            cant: product.cant,
+            description: product.description,
+            // nombreEmprendimiento: product.nombreEmprendimiento,
+        })
+     }else {
+        res.status(400)
+        throw new Error('Invalid user data')
+     }
+
+     const savedProduct = await product.save();
+     console.log(savedProduct);
+})
+
+//@route GET /api/product/getProduct
+const getProduct = asyncHandler(async (req, res) => {
+    const goals = await Product.find({ product: req.product.email })
+
+    res.status(200).json(goals)
+})
+
 
 module.exports = {
     registerUser,
@@ -223,4 +289,6 @@ module.exports = {
     loginUserE,
     getMeE,
     getRol,
+    createProduct,
+    getProduct,
 }
