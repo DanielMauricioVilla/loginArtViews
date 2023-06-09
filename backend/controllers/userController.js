@@ -3,7 +3,8 @@ const bcrypt = require ('bcryptjs')
 const asyncHandler = require ('express-async-handler')
 const User = require ('../models/userModel')
 const Role = require('../models/rolModel')
-
+const administrator = require('../models/admModel')
+const investor = require('../models/invModel')
 const UserE = require ('../models/userEModel')
 const Product = require ('../models/productModel')
 
@@ -100,6 +101,191 @@ const GenerateToken = (id) => {
         expiresIn: '30d'
     })
 }
+
+//---------------investor-----------
+
+const registerinvestor = asyncHandler(async(req, res) => {
+    const { name, email, password, date, roles} = req.body
+
+    if (!name || !email || !password|| !date) {
+        res.status(400)
+        throw new Error('please add all fields')
+    }
+
+    //Check if user exists
+    const investorExists = await investor.findOne({email})
+
+    if (investorExists){
+        res.status(400)
+        throw new Error('user already exists')
+    }
+
+    //hash password
+    const salt = await  bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    //Create user
+    const investor = await investor.create ({
+        name,
+        email,
+        date,
+        password: hashedPassword,
+    })
+
+    if (roles) {
+        const foundRoles = await Role.find({name: {$in: roles}})
+        investor.roles = foundRoles.map(role => role._id)
+    } else {
+        const role = await Role.findOne({name: "inversionista"})
+        investor.roles = [role._id]
+    }
+
+     if (investor){
+        res.status(201).json({
+            _id: investor.id,
+            name: investor.name,
+            email: investor.email,
+            rol: investor.roles,
+            token: GenerateToken(investor._id),
+        })
+     }else {
+        res.status(400)
+        throw new Error('Invalid investor data')
+     }
+
+     const savedinvestor = await investor.save();
+     console.log(savedinvestor);
+})
+
+//@desc   Authenticate a user
+//@route POST /api/users/login
+//@acess Public
+const logininvestor = asyncHandler(async(req, res) => {
+    const {email, password} = req.body
+
+    //Check for user email
+    const investor = await investor.findOne({email})
+
+    if (investor && (await bcrypt.compare(password,investor.password))) {
+        res.json({
+            _id: investor.id,
+            name: investor.name,
+            email: investor.email,
+            rol: investor.roles,
+            token: GenerateToken(investor._id),
+        })
+    }else {
+        res.status(400)
+        throw new Error('Invalid credentials')
+    }
+})
+
+//@desc   Get user data
+//@route GET /api/users/me
+//@acess Private
+const getMeinvestor = asyncHandler(async(req, res) => {
+    res.status(200).json(req.user)
+} )
+
+//Generate JWT
+const GenerateTokeninvestor = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
+
+//------------administreator-----
+
+const registeradministrator = asyncHandler(async(req, res) => {
+    const { name, email, password, date, roles} = req.body
+
+    if (!name || !email || !password|| !date) {
+        res.status(400)
+        throw new Error('please add all fields')
+    }
+
+    //Check if user exists
+    const administratorExists = await administrator.findOne({email})
+
+    if (administratorExists){
+        res.status(400)
+        throw new Error('user already exists')
+    }
+
+    //hash password
+    const salt = await  bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    //Create user
+    const administrator = await administrator.create ({
+        name,
+        email,
+        date,
+        password: hashedPassword,
+    })
+
+    if (roles) {
+        const foundRoles = await Role.find({name: {$in: roles}})
+        administrator.roles = foundRoles.map(role => role._id)
+    } else {
+        const role = await Role.findOne({name: "inversionista"})
+        administrator.roles = [role._id]
+    }
+
+     if (administrator){
+        res.status(201).json({
+            _id: administrator.id,
+            name: administrator.name,
+            email: administrator.email,
+            rol: administrator.roles,
+            token: GenerateToken(administrator._id),
+        })
+     }else {
+        res.status(400)
+        throw new Error('Invalid administrator data')
+     }
+
+     const savedadministrator = await administrator.save();
+     console.log(savedadministrator);
+})
+
+//@desc   Authenticate a user
+//@route POST /api/users/login
+//@acess Public
+const loginadministrator = asyncHandler(async(req, res) => {
+    const {email, password} = req.body
+
+    //Check for user email
+    const administrator = await administrator.findOne({email})
+
+    if (administrator && (await bcrypt.compare(password,administrator.password))) {
+        res.json({
+            _id: administrator.id,
+            name: administrator.name,
+            email: administrator.email,
+            rol: administrator.roles,
+            token: GenerateToken(administrator._id),
+        })
+    }else {
+        res.status(400)
+        throw new Error('Invalid credentials')
+    }
+})
+
+//@desc   Get user data
+//@route GET /api/users/me
+//@acess Private
+const getMeadministrator = asyncHandler(async(req, res) => {
+    res.status(200).json(req.user)
+} )
+
+//Generate JWT
+const GenerateTokenadministrator = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    })
+}
+
 
 
 
@@ -282,6 +468,10 @@ const getProduct = asyncHandler(async (req, res) => {
 
 
 module.exports = {
+    registerinvestor,
+    logininvestor,
+    registeradministrator,
+    loginadministrator,
     registerUser,
     loginUser,
     getMe,

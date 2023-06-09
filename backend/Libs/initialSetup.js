@@ -9,6 +9,8 @@ const createRol = async ()=>{
         const values = await Promise.all([
             new Role({name: "cliente"}).save(),
             new Role({name: "emprendedor"}).save(),
+            new Role({name: "administrador"}).save(),
+            new Role({name: "inversionista"}).save(),
         ])
         console.log(`data ${values}`.bgGreen.underline);
     } catch(err) {

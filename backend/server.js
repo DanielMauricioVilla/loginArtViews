@@ -22,6 +22,8 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/api/goals', require('./routes/goalRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
+app.use('/api/investor', require('./routes/userRoutes'))
+app.use('/api/administrator', require('./routes/userRoutes'))
 app.use('/api/userE', require('./routes/userRoutes'))
 app.use('/api/product', require('./routes/userRoutes'))
 
