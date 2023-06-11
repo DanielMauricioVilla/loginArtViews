@@ -3,8 +3,8 @@ const bcrypt = require ('bcryptjs')
 const asyncHandler = require ('express-async-handler')
 const User = require ('../models/userModel')
 const Role = require('../models/rolModel')
-const administrator = require('../models/admModel')
-const investor = require('../models/invModel')
+const Administrator = require('../models/admModel')
+const Investor = require('../models/invModel')
 const UserE = require ('../models/userEModel')
 const Product = require ('../models/productModel')
 
@@ -113,7 +113,7 @@ const registerinvestor = asyncHandler(async(req, res) => {
     }
 
     //Check if user exists
-    const investorExists = await investor.findOne({email})
+    const investorExists = await Investor.findOne({email})
 
     if (investorExists){
         res.status(400)
@@ -125,7 +125,7 @@ const registerinvestor = asyncHandler(async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
 
     //Create user
-    const investor = await investor.create ({
+    const investor = await Investor.create ({
         name,
         email,
         date,
@@ -164,7 +164,7 @@ const logininvestor = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
     //Check for user email
-    const investor = await investor.findOne({email})
+    const investor = await Investor.findOne({email})
 
     if (investor && (await bcrypt.compare(password,investor.password))) {
         res.json({
@@ -205,7 +205,7 @@ const registeradministrator = asyncHandler(async(req, res) => {
     }
 
     //Check if user exists
-    const administratorExists = await administrator.findOne({email})
+    const administratorExists = await Administrator.findOne({email})
 
     if (administratorExists){
         res.status(400)
@@ -217,7 +217,7 @@ const registeradministrator = asyncHandler(async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt)
 
     //Create user
-    const administrator = await administrator.create ({
+    const administrator = await Administrator.create ({
         name,
         email,
         date,
@@ -256,7 +256,7 @@ const loginadministrator = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
     //Check for user email
-    const administrator = await administrator.findOne({email})
+    const administrator = await Administrator.findOne({email})
 
     if (administrator && (await bcrypt.compare(password,administrator.password))) {
         res.json({
@@ -461,24 +461,39 @@ const createProduct = asyncHandler(async(req, res) => {
 
 //@route GET /api/product/getProduct
 const getProduct = asyncHandler(async (req, res) => {
-    const goals = await Product.find({ product: req.product.email })
-
-    res.status(200).json(goals)
+    try{
+        const product = await Product.find()
+        console.log(product)
+        if (product) {
+            res.json(product)
+        }else {
+            res.status(402)
+            throw new Error('Invalid no found')
+        }
+    }
+    catch(error){
+        console.log(error)
+    }
 })
 
 
 module.exports = {
     registerinvestor,
     logininvestor,
+    //
     registeradministrator,
     loginadministrator,
+    //
     registerUser,
     loginUser,
     getMe,
+    //
     registerUserE,
     loginUserE,
     getMeE,
+    //
     getRol,
+    //
     createProduct,
     getProduct,
 }
