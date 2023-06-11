@@ -104,7 +104,7 @@ const GenerateToken = (id) => {
 
 //---------------investor-----------
 
-const registerinvestor = asyncHandler(async(req, res) => {
+const registerInvestor = asyncHandler(async(req, res) => {
     const { name, email, password, date, roles} = req.body
 
     if (!name || !email || !password|| !date) {
@@ -160,7 +160,7 @@ const registerinvestor = asyncHandler(async(req, res) => {
 //@desc   Authenticate a user
 //@route POST /api/users/login
 //@acess Public
-const logininvestor = asyncHandler(async(req, res) => {
+const loginInvestor = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
     //Check for user email
@@ -196,7 +196,7 @@ const GenerateTokeninvestor = (id) => {
 
 //------------administreator-----
 
-const registeradministrator = asyncHandler(async(req, res) => {
+const registeAdministrator = asyncHandler(async(req, res) => {
     const { name, email, password, date, roles} = req.body
 
     if (!name || !email || !password|| !date) {
@@ -252,7 +252,7 @@ const registeradministrator = asyncHandler(async(req, res) => {
 //@desc   Authenticate a user
 //@route POST /api/users/login
 //@acess Public
-const loginadministrator = asyncHandler(async(req, res) => {
+const loginAdministrator = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
     //Check for user email
@@ -476,13 +476,71 @@ const getProduct = asyncHandler(async (req, res) => {
     }
 })
 
+//@desc   update product
+//@route PUT /api/product/:id
+const updateProduct = asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id)
+
+    if (!product) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    //Chaeck for user
+    // if(!req.user){
+    //     res.status(401)
+    //     throw new Error('User not found')
+    // }
+
+    //Make sure the logged in user maches the goal user
+    // if(product.user.toString() !== req.user.id){
+    //     res.status(401)
+    //     throw new Error('User not autorized')
+    // }
+
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedProduct)
+})
+
+//@desc   Delete goal
+//@route DELETE /api/goals/:id
+//@acess Private
+const deleteProduct = asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id)
+
+    if (!product) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    //Chaeck for user
+    // if(!req.user){
+    //     res.status(401)
+    //     throw new Error('User not found')
+    // }
+
+    // //Make sure the logged in user maches the goal user
+    // if(product.user.toString() !== req.user.id){
+    //     res.status(401)
+    //     throw new Error('User not autorized')
+    // }
+
+    await Product.findByIdAndDelete(product)
+
+    res.status(200).json({ id: req.params.id })
+})
+
+
 
 module.exports = {
-    registerinvestor,
-    logininvestor,
+    registerInvestor,
+    loginInvestor,
     //
-    registeradministrator,
-    loginadministrator,
+    registeAdministrator,
+    loginAdministrator,
     //
     registerUser,
     loginUser,
@@ -496,4 +554,6 @@ module.exports = {
     //
     createProduct,
     getProduct,
+    updateProduct,
+    deleteProduct,
 }
