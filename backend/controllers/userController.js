@@ -345,7 +345,7 @@ const registeAdministrator = asyncHandler(async(req, res) => {
         const foundRoles = await Role.find({name: {$in: roles}})
         administrator.roles = foundRoles.map(role => role._id)
     } else {
-        const role = await Role.findOne({name: "inversionista"})
+        const role = await Role.findOne({name: "administrador"})
         administrator.roles = [role._id]
     }
 
@@ -587,6 +587,7 @@ const getRol = asyncHandler(async(req, res) => {
     const {email} = req.body
     const user = await User.findOne({ email: email})
     const userE = await UserE.findOne({ email: email})
+    const administrator = await Administrator.findOne({ email: email})
 
     if (user) {
         const {roles} = user;
@@ -595,6 +596,11 @@ const getRol = asyncHandler(async(req, res) => {
         });
     }else if (userE){
         const {roles} = userE;
+        res.status(200).json({
+            roles,
+        });
+    }else if (administrator){
+        const {roles} = administrator;
         res.status(200).json({
             roles,
         });
