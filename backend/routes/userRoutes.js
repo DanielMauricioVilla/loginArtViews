@@ -1,15 +1,17 @@
 const express = require ('express')
 const router = express.Router()
 const { 
-    registerinvestor,
-    logininvestor,
-    
-    registeradministrator,
-    loginadministrator,
+    registerInvestor,
+    loginInvestor,
+
+    registeAdministrator,
+    loginAdministrator,
     
     registerUser, 
     loginUser,
     getMe,
+    updateUser,
+    deleteUser,
 
     registerUserE, 
     loginUserE,
@@ -24,16 +26,30 @@ const {
  } = require ('../controllers/userController')
 //  const {protect} = require ('../middleware/authMiddleware')
 
+//Usuario cliente
 router.post('/registerUser', registerUser)
 router.post('/login', loginUser)
 router.get('/me', getMe)
+router.put('/client/:id', updateUser)
+router.delete('/client/:id', deleteUser)
 
+//Emprendimiento
 router.post('/registerUserE', registerUserE)
 router.post('/loginE', loginUserE)
 router.get('/me', getMeE)
 
+//Invercionista
+router.post('/registerInvestor', registerInvestor)
+router.post('/loginInvestor', loginInvestor)
+
+//Administrador
+router.post('/registeAdministrator', registeAdministrator)
+router.post('/loginAdministrator', loginAdministrator)
+
+//roles
 router.post('/rolUsers', getRol)
 
+//Producto
 router.post('/registerProduct', createProduct)
 router.get('/getProduct', getProduct)
 router.put('/:id', updateProduct)

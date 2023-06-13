@@ -95,6 +95,65 @@ const getMe = asyncHandler(async(req, res) => {
     res.status(200).json(req.user)
 } )
 
+
+//@desc   update user
+//@route PUT /api/user/:id
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+
+    if (!user) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedUser)
+})
+
+//@desc   Delete user
+//@route DELETE /api/user/:id
+//@acess Private
+const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+
+    if (!user) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*//Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    //Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    await User.findByIdAndDelete(user)
+
+    res.status(200).json({ id: req.params.id })
+})
+
+
 //Generate JWT
 const GenerateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -103,7 +162,9 @@ const GenerateToken = (id) => {
 }
 
 //---------------investor-----------
-
+//@desc   Register new investor
+//@route POST /api/
+//@acess Public
 const registerInvestor = asyncHandler(async(req, res) => {
     const { name, email, password, date, roles} = req.body
 
@@ -194,12 +255,69 @@ const GenerateTokeninvestor = (id) => {
     })
 }
 
+//@desc   update user
+//@route PUT /api/user/:id
+const updateInvestor = asyncHandler(async (req, res) => {
+    const investor = await Investor.findById(req.params.id)
+
+    if (!investor) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    const updatedInvestor= await Investor.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedInvestor)
+})
+
+//@desc   Delete user
+//@route DELETE /api/user/:id
+//@acess Private
+const deleteInvestor = asyncHandler(async (req, res) => {
+    const investor = await Investor.findById(req.params.id)
+
+    if (!investor) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*//Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    //Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    await Investor.findByIdAndDelete(investor)
+
+    res.status(200).json({ id: req.params.id })
+})
+
 //------------administreator-----
 
 const registeAdministrator = asyncHandler(async(req, res) => {
-    const { name, email, password, date, roles} = req.body
+    const { name, email, password, roles} = req.body
 
-    if (!name || !email || !password|| !date) {
+    if (!name || !email || !password) {
         res.status(400)
         throw new Error('please add all fields')
     }
@@ -220,7 +338,6 @@ const registeAdministrator = asyncHandler(async(req, res) => {
     const administrator = await Administrator.create ({
         name,
         email,
-        date,
         password: hashedPassword,
     })
 
@@ -286,7 +403,34 @@ const GenerateTokenadministrator = (id) => {
     })
 }
 
+//@desc   update user
+//@route PUT /api/user/:id
+const updateAdministrator = asyncHandler(async (req, res) => {
+    const administrator = await Administrator.findById(req.params.id)
 
+    if (!administrator) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    const updatedAdministrator= await Administrator.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedAdministrator)
+})
 
 
 //---------userE---------
@@ -371,12 +515,72 @@ const loginUserE = asyncHandler(async(req, res) => {
     }
 })
 
-//@desc   Get user data
+//@desc   Get userE data
 //@route GET /api/users/me
 //@acess Private
 const getMeE = asyncHandler(async(req, res) => {
     res.status(200).json(req.userE)
-} )
+})
+
+//@desc   update user
+//@route PUT /api/user/:id
+const updateUserE = asyncHandler(async (req, res) => {
+    const userE = await UserE.findById(req.params.id)
+
+    if (!userE) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    const updatedUserE = await UserE.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedUserE)
+})
+
+//@desc   Delete user
+//@route DELETE /api/user/:id
+//@acess Private
+const deleteUserE = asyncHandler(async (req, res) => {
+    const userE = await UserE.findById(req.params.id)
+
+    if (!userE) {
+        res.status (400)
+        throw new Error('Product not found')
+    }
+
+    /*//Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    //Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
+
+    await UserE.findByIdAndDelete(userE)
+
+    res.status(200).json({ id: req.params.id })
+})
+
+
+//-------------------rol--------------
 
 //@route POST /api/users/rol
 const getRol = asyncHandler(async(req, res) => {
@@ -400,6 +604,8 @@ const getRol = asyncHandler(async(req, res) => {
         })
     }
 });
+
+//------------rpoduct--------
 
 //@route POST /api/product/product
 const createProduct = asyncHandler(async(req, res) => {
@@ -486,17 +692,17 @@ const updateProduct = asyncHandler(async (req, res) => {
         throw new Error('Product not found')
     }
 
-    //Chaeck for user
-    // if(!req.user){
-    //     res.status(401)
-    //     throw new Error('User not found')
-    // }
+    /*Chaeck for user
+    if(!req.user){
+        res.status(401)
+        throw new Error('User not found')
+    }
 
-    //Make sure the logged in user maches the goal user
-    // if(product.user.toString() !== req.user.id){
-    //     res.status(401)
-    //     throw new Error('User not autorized')
-    // }
+    Make sure the logged in user maches the goal user
+    if(product.user.toString() !== req.user.id){
+        res.status(401)
+        throw new Error('User not autorized')
+    }*/
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
@@ -538,17 +744,24 @@ const deleteProduct = asyncHandler(async (req, res) => {
 module.exports = {
     registerInvestor,
     loginInvestor,
+    updateInvestor,
+    deleteInvestor,
     //
     registeAdministrator,
     loginAdministrator,
+    updateAdministrator,
     //
     registerUser,
     loginUser,
     getMe,
+    updateUser,
+    deleteUser,
     //
     registerUserE,
     loginUserE,
     getMeE,
+    updateUserE,
+    deleteUserE,
     //
     getRol,
     //
