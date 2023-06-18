@@ -615,11 +615,11 @@ const getRol = asyncHandler(async(req, res) => {
 
 //@route POST /api/product/product
 const createProduct = asyncHandler(async(req, res) => {
-    // const { email, nameP, img, category, price, cant, description, nombreEmprendimiento } = req.body
-    const { nameP, img, category, price, cant, description} = req.body
+    const { email, nameP, img, category, price, cant, description, emprendimiento } = req.body
+    // const { nameP, img, category, price, cant, description} = req.body
 
-    // if ( !email || !nameP || !img || !category || !price || !cant || !description) {
-    if ( !nameP || !img || !category || !price || !cant || !description) {
+    if ( !email || !nameP || !img || !category || !price || !cant || !description) {
+    // if ( !nameP || !img || !category || !price || !cant || !description) {
         res.status(400)
         throw new Error('please add all fields')
     }
@@ -634,7 +634,6 @@ const createProduct = asyncHandler(async(req, res) => {
 
     //Create product
     const product = await Product.create ({
-        // email,
         nameP,
         img,
         category,
@@ -643,13 +642,13 @@ const createProduct = asyncHandler(async(req, res) => {
         description,
     })
 
-    // if (nombreEmprendimiento) {
-    //     const foundProduct = await UserE.find({name: {$in: nombreEmprendimiento}})
-    //     product.nombreEmprendimiento = foundProduct.map(us => us._id)
-    // } else {
-    //     const userE = await UserE.findOne({email})
-    //     product.nombreEmprendimiento = [userE._id]
-    // }
+    if (emprendimiento) {
+        const foundProduct = await UserE.find({name: {$in: emprendimiento}})
+        product.emprendimiento = foundProduct.map(us => us._id)
+    } else {
+        const userE = await UserE.findOne({email})
+        product.emprendimiento = [userE._id]
+    }
 
      if (product){
         res.status(201).json({
@@ -660,7 +659,7 @@ const createProduct = asyncHandler(async(req, res) => {
             price: product.price,
             cant: product.cant,
             description: product.description,
-            // nombreEmprendimiento: product.nombreEmprendimiento,
+            emprendimiento: product.emprendimiento,
         })
      }else {
         res.status(400)

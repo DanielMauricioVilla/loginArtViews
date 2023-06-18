@@ -25,11 +25,11 @@ const productSchema = mongoose.Schema({
         type: String,
         required: [true, 'please add a description']
     },
-    // nombreEmprendimiento:{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     require: true,
-    //     ref: 'UserE',
-    // },
+    emprendimiento:{
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref: 'UserE',
+    },
 }, 
 {
     timestamps: true
