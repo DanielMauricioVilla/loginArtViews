@@ -519,24 +519,12 @@ const updateUserE = asyncHandler(async (req, res) => {
         res.status (400)
         throw new Error('Product not found')
     }
-
-    /*Chaeck for user
-    if(!req.user){
-        res.status(401)
-        throw new Error('User not found')
-    }
-
-    Make sure the logged in user maches the goal user
-    if(product.user.toString() !== req.user.id){
-        res.status(401)
-        throw new Error('User not autorized')
-    }*/
-
-    const updatedUserE = await UserE.findByIdAndUpdate(req.params.id, req.body, {
+    
+    const updatedUser = await UserE.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
     })
 
-    res.status(200).json(updatedUserE)
+    res.status(200).json(updatedUser)
 })
 
 //@desc   Delete user
