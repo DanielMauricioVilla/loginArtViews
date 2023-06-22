@@ -15,6 +15,7 @@ const {
 
     registerUserE, 
     loginUserE,
+    updateUserE,
     getMeE,
 
     getRol,
@@ -36,6 +37,7 @@ router.delete('/client/:id', deleteUser)
 //Emprendimiento
 router.post('/registerUserE', registerUserE)
 router.post('/loginE', loginUserE)
+router.put('/clientE/:id', updateUserE)
 router.get('/me', getMeE)
 
 //Invercionista
