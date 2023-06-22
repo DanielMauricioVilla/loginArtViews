@@ -100,30 +100,20 @@ const getMe = asyncHandler(async(req, res) => {
 //@route PUT /api/user/:id
 const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id)
+    const { name, email, password } = req.body
 
     if (!user) {
         res.status (400)
         throw new Error('Product not found')
     }
-
-    /*Chaeck for user
-    if(!req.user){
-        res.status(401)
-        throw new Error('User not found')
-    }
-
-    Make sure the logged in user maches the goal user
-    if(product.user.toString() !== req.user.id){
-        res.status(401)
-        throw new Error('User not autorized')
-    }*/
     
      //hash password
      const salt = await  bcrypt.genSalt(10)
      const hashedPassword = await bcrypt.hash(password, salt)
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+        name,
+        email,
         password: hashedPassword,
     })
 
