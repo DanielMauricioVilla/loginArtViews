@@ -522,14 +522,21 @@ const getMeE = asyncHandler(async(req, res) => {
 //@route PUT /api/user/:id
 const updateUserE = asyncHandler(async (req, res) => {
     const userE = await UserE.findById(req.params.id)
+    const { name, email, password } = req.body
 
     if (!userE) {
         res.status (400)
         throw new Error('Product not found')
     }
+
+    //hash password
+     const salt = await  bcrypt.genSalt(10)
+     const hashedPassword = await bcrypt.hash(password, salt)
     
-    const updatedUser = await UserE.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
+    const updatedUser = await UserE.findByIdAndUpdate(req.params.id, {
+        name, 
+        email, 
+        password: hashedPassword,
     })
 
     res.status(200).json(updatedUser)
