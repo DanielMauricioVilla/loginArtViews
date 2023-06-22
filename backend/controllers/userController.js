@@ -117,9 +117,14 @@ const updateUser = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('User not autorized')
     }*/
+    
+     //hash password
+     const salt = await  bcrypt.genSalt(10)
+     const hashedPassword = await bcrypt.hash(password, salt)
 
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
+        password: hashedPassword,
     })
 
     res.status(200).json(updatedUser)
