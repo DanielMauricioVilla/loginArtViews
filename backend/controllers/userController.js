@@ -100,14 +100,22 @@ const getMe = asyncHandler(async(req, res) => {
 //@route PUT /api/user/:id
 const updateUser = asyncHandler(async (req, res) => {
         const user = await User.findById(req.params.id)
+        const { name, email, password } = req.body
 
     if (!user) {
         res.status (400)
         throw new Error('Product not found')
     }
+
     
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
+     //hash password
+     const salt = await  bcrypt.genSalt(10)
+     const hashedPassword = await bcrypt.hash(password, salt)
+    
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+        name, 
+        email, 
+        password: hashedPassword,
     })
 
     res.status(200).json(updatedUser)
